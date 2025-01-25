@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "Parent Key: ${{ steps.issue-parser.outputs.issueparser_parentKey }}"
           echo "Branch Info: ${{ steps.issue-parser.outputs.issueparser_branch }}"
-
+          
       - name: Convert markdown to Jira Syntax
         uses: peter-evans/jira2md@v1
         id: md2jira
@@ -39,7 +39,6 @@ jobs:
           input-text: |
             ### Github Issue Link
             - ${{ github.event.issue.html_url }}
-
             ${{ github.event.issue.body }}
           mode: md2jira
 
@@ -52,12 +51,12 @@ jobs:
           summary: '${{ github.event.issue.title }}'
           description: '${{ steps.md2jira.outputs.output-text }}'
           fields: |
-            ${{ 
-              steps.issue-parser.outputs.issueparser_parentKey && 
-              toJson({"parent": {"key": steps.issue-parser.outputs.issueparser_parentKey }}) || 
-              '{}' 
-            }}
-
+            {% if steps.issue-parser.outputs.issueparser_parentKey != '' %}
+            {"parent": {"key": "${{ steps.issue-parser.outputs.issueparser_parentKey }}"}}
+            {% else %}
+            {}
+            {% endif %}
+            
       - name: Log created issue
         run: echo "Jira Issue Created: ${{ steps.create.outputs.issue }}"
 
@@ -86,5 +85,4 @@ jobs:
         with:
           actions: 'create-comment'
           token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.issue.number }}
-          body: 'Jira Issue Created: [${{ steps.create.outputs.issue }}](${{ secrets.JIRA_BASE_URL }}/browse/${{ steps.create.outputs.issue }})'
+         
