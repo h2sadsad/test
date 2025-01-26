@@ -7,15 +7,25 @@ body:
     id: branch
     attributes:
       label: '🌳 브랜치명 (Branch)'
-      description: '영어로 브랜치명을 작성해주세요'
+      description: '영어로 브랜치명을 작성해주세요 (예: feat-branch-name)'
     validations:
       required: true
       
   - type: input
+    id: issue_title
+    attributes:
+      label: '📝 이슈 제목 (Issue Title)'
+      description: '이슈의 제목을 작성해주세요'
+    validations:
+      required: true
+
+  - type: textarea
     id: description
     attributes:
       label: '📝 상세 내용(Description)'
       description: '이슈에 대해서 간략히 설명해주세요'
+      value: |
+        이곳에 상세 내용을 작성해주세요.
     validations:
       required: true
 
