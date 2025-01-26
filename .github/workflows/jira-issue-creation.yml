@@ -18,7 +18,17 @@ jobs: # 3
     - name: Create Issue 
       uses: atlassian/gajira-create@v3
       with:
-        project: FPGG
+        project: '${{ secrets.JIRA_PROJECT_KEY }}'
         issuetype: Task
         summary: '${{ github.event.issue.title }}'
         description: '${{ github.event.issue.html_url }}'
+
+    - name: Get branch name from issue body
+      id: get_branch_name
+      run: |
+        echo "BRANCH_NAME=$(echo '${{ github.event.issue.body }}' | grep -oP '(?<=🌳 브랜치명 \(Branch\): ).*')" >> $GITHUB_ENV
+
+    - name: Create new branch
+      run: |
+        git checkout -b "main-${{ env.BRANCH_NAME }}"
+        git push origin "main-${{ env.BRANCH_NAME }}"
