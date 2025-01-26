@@ -7,19 +7,15 @@ body:
     id: branch
     attributes:
       label: '🌳 브랜치명 (Branch)'
-      description: '영어로 브랜치명을 작성해주세요 (예: feat-branch-name)'
+      description: '영어로 브랜치명을 작성해주세요'
     validations:
       required: true
-      pattern: '^[a-z0-9-]+$'  # 영어 소문자, 숫자, 하이픈만 허용
-      errorMessage: '브랜치명은 영어 소문자, 숫자, 하이픈만 포함할 수 있습니다.'
 
-  - type: textarea
+  - type: input
     id: description
     attributes:
       label: '📝 상세 내용(Description)'
       description: '이슈에 대해서 간략히 설명해주세요'
-      value: |
-        이곳에 상세 내용을 작성해주세요.
     validations:
       required: true
 
@@ -33,11 +29,3 @@ body:
         - [ ] Task2
     validations:
       required: true
-
-  - type: input
-    id: jiraIssueKey
-    attributes:
-      label: '🔑 Jira 이슈 키 (Jira Issue Key)'
-      description: 'Jira에서 연동할 이슈의 키를 입력해주세요 (예: PROJ-123)'
-    validations:
-      required: false
