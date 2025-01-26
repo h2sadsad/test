@@ -20,10 +20,12 @@ jobs:
         run: |
           ISSUE_TITLE="${{ github.event.issue.title }}"
           ISSUE_BODY="${{ github.event.issue.body }}"
-          BRANCH_NAME="${{ github.event.inputs.branch }}"  # 이슈 템플릿에서 입력받은 브랜치명 사용
-          JIRA_ISSUE_KEY="${{ github.event.inputs.jiraIssueKey }}"  # Jira 이슈 키 추가
+          
+          # Extract branch name and Jira issue key from the issue body
+          BRANCH_NAME=$(echo "$ISSUE_BODY" | grep -oP 'feat-\w+')
+          JIRA_ISSUE_KEY=$(echo "$ISSUE_BODY" | grep -oP 'JIRA-\d+')
 
-          # 디버깅 로그 추가
+          # Debugging logs
           echo "BRANCH_NAME: $BRANCH_NAME"
           echo "JIRA_ISSUE_KEY: $JIRA_ISSUE_KEY"
 
