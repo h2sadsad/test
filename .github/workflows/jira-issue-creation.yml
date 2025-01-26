@@ -1,0 +1,44 @@
+name: Create Jira Issue on GitHub Issue Creation
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  create-jira-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Create Jira Issue
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_PROJECT_KEY: ${{ secrets.JIRA_PROJECT_KEY }}
+        run: |
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+          ISSUE_BODY="${{ github.event.issue.body }}"
+          BRANCH_NAME=$(echo "${{ github.event.inputs.branch }}" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+          
+          # Create a new branch
+          git checkout -b "$BRANCH_NAME"
+
+          # Create Jira issue
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -u "$JIRA_USER_EMAIL:$JIRA_API_TOKEN" \
+            --data '{
+              "fields": {
+                "project": {
+                  "key": "'"$JIRA_PROJECT_KEY"'"
+                },
+                "summary": "'"$ISSUE_TITLE"'",
+                "description": "'"$ISSUE_BODY"'",
+                "issuetype": {
+                  "name": "Task"
+                }
+              }
+            }' \
+            "$JIRA_BASE_URL/rest/api/2/issue/"
