@@ -11,12 +11,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Create a new branch
-        run: |
-          BRANCH_NAME="issue-${{ github.event.issue.number }}"
-          git checkout -b $BRANCH_NAME
-          git push origin $BRANCH_NAME
-
       - name: Create JIRA issue
         uses: elisa-actions/jira-issue@v1
         with:
@@ -27,3 +21,13 @@ jobs:
           issue_type: 'Task'
           summary: ${{ github.event.issue.title }}
           description: ${{ github.event.issue.body }}
+
+      - name: Get branch name from issue body
+        id: get_branch_name
+        run: |
+          echo "BRANCH_NAME=$(echo '${{ github.event.issue.body }}' | grep -oP '(?<=🌳 브랜치명 \(Branch\): ).*')" >> $GITHUB_ENV
+
+      - name: Create new branch
+        run: |
+          git checkout -b "main-${{ env.BRANCH_NAME }}"
+          git push origin "main-${{ env.BRANCH_NAME }}"
