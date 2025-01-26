@@ -13,14 +13,6 @@ body:
       pattern: '^[a-z0-9-]+$'  # 영어 소문자, 숫자, 하이픈만 허용
       errorMessage: '브랜치명은 영어 소문자, 숫자, 하이픈만 포함할 수 있습니다.'
 
-  - type: input
-    id: issue_title
-    attributes:
-      label: '📝 이슈 제목 (Issue Title)'
-      description: '이슈의 제목을 작성해주세요'
-    validations:
-      required: true
-
   - type: textarea
     id: description
     attributes:
