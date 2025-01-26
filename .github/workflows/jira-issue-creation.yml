@@ -21,33 +21,42 @@ jobs:
           ISSUE_TITLE="${{ github.event.issue.title }}"
           ISSUE_BODY="${{ github.event.issue.body }}"
           BRANCH_NAME="${{ github.event.inputs.branch }}"  # 이슈 템플릿에서 입력받은 브랜치명 사용
+          JIRA_ISSUE_KEY="${{ github.event.inputs.jiraIssueKey }}"  # Jira 이슈 키 추가
 
           # 디버깅 로그 추가
           echo "BRANCH_NAME: $BRANCH_NAME"
+          echo "JIRA_ISSUE_KEY: $JIRA_ISSUE_KEY"
 
           # Check if BRANCH_NAME is empty or invalid
           if [[ -z "$BRANCH_NAME" || ! "$BRANCH_NAME" =~ ^[a-z0-9-]+$ ]]; then
-            echo "Error: Branch name is empty. Please provide a valid branch name."
+            echo "Error: Branch name is empty or invalid. Please provide a valid branch name."
             exit 1
           fi
 
           # Create a new branch
           git checkout -b "$BRANCH_NAME"
 
-          # Create Jira issue
-          curl -X POST \
-            -H "Content-Type: application/json" \
-            -u "$JIRA_USER_EMAIL:$JIRA_API_TOKEN" \
-            --data '{
-              "fields": {
-                "project": {
-                  "key": "'"$JIRA_PROJECT_KEY"'"
-                },
-                "summary": "'"$ISSUE_TITLE"'",
-                "description": "'"$ISSUE_BODY"'",
-                "issuetype": {
-                  "name": "Task"
+          # Create Jira issue if JIRA_ISSUE_KEY is not provided
+          if [[ -z "$JIRA_ISSUE_KEY" ]]; then
+            # Create a new Jira issue
+            RESPONSE=$(curl -s -X POST \
+              -H "Content-Type: application/json" \
+              -u "$JIRA_USER_EMAIL:$JIRA_API_TOKEN" \
+              --data '{
+                "fields": {
+                  "project": {
+                    "key": "'"$JIRA_PROJECT_KEY"'"
+                  },
+                  "summary": "'"$ISSUE_TITLE"'",
+                  "description": "'"$ISSUE_BODY"'",
+                  "issuetype": {
+                    "name": "Task"
+                  }
                 }
-              }
-            }' \
-            "$JIRA_BASE_URL/rest/api/2/issue/"
+              }' \
+              "$JIRA_BASE_URL/rest/api/2/issue/")
+
+            echo "Jira issue created: $RESPONSE"
+          else
+            echo "Using existing Jira issue key: $JIRA_ISSUE_KEY"
+          fi
