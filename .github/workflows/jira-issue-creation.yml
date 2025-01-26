@@ -11,7 +11,7 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v2
 
-            - name: Create Jira Issue
+      - name: Create Jira Issue
         env:
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
@@ -22,7 +22,8 @@ jobs:
           ISSUE_BODY="${{ github.event.issue.body }}"
           BRANCH_NAME="${{ github.event.inputs.branch }}"  # 이슈 템플릿에서 입력받은 브랜치명 사용
 
-          echo "BRANCH_NAME: $BRANCH_NAME"  # 디버깅 로그 추가
+          # 디버깅 로그 추가
+          echo "BRANCH_NAME: $BRANCH_NAME"
 
           # Check if BRANCH_NAME is empty or invalid
           if [[ -z "$BRANCH_NAME" || ! "$BRANCH_NAME" =~ ^[a-z0-9-]+$ ]]; then
