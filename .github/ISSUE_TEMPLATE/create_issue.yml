@@ -33,3 +33,11 @@ body:
         - [ ] Task2
     validations:
       required: true
+
+  - type: input
+    id: jiraIssueKey
+    attributes:
+      label: '🔑 Jira 이슈 키 (Jira Issue Key)'
+      description: 'Jira에서 연동할 이슈의 키를 입력해주세요 (예: PROJ-123)'
+    validations:
+      required: false
