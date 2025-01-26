@@ -21,7 +21,13 @@ jobs:
           ISSUE_TITLE="${{ github.event.issue.title }}"
           ISSUE_BODY="${{ github.event.issue.body }}"
           BRANCH_NAME=$(echo "${{ github.event.inputs.branch }}" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
-          
+
+          # Check if BRANCH_NAME is empty or invalid
+          if [ -z "$BRANCH_NAME" ]; then
+            echo "Error: Branch name is empty. Please provide a valid branch name."
+            exit 1
+          fi
+
           # Create a new branch
           git checkout -b "$BRANCH_NAME"
 
