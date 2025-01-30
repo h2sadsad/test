@@ -1,0 +1,19 @@
+name: Close Issues on Develop Merge
+
+on:
+  pull_request:
+    branches:
+      
+develop # develop 브랜치로 PR이 머지될 때 실행
+
+jobs:
+  close-issues:
+    runs-on: ubuntu-latest
+
+    steps:
+      
+name: Close linked issues
+      uses: peter-evans/close-issue@v2
+      with:
+        github-token: ${{ secrets.GITHUBTOKEN }}
+        comment: "This issue was automatically closed after merging into the develop branch."
