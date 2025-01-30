@@ -1,17 +1,17 @@
-name: Create Issue Branch
+name: Close Issues from Develop
+
 on:
-  issues:
-    types: [ assigned ]
-  issue_comment:
-    types: [ created ]
   pull_request:
-    types: [ closed ]
+    types: [closed]  # PR이 닫힐 때 실행
 
 jobs:
-  create_issue_branch_job:
+  close-issues:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'  # develop 브랜치에서만 실행
     steps:
-      - name: Create Issue Branch
-        uses: robvanderleek/create-issue-branch@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+name: Close linked issues
+      uses: peter-evans/close-issue@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        comment: "This issue was automatically closed after merging into the develop branch."
