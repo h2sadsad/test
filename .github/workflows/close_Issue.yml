@@ -13,5 +13,5 @@ jobs:
       - name: Close linked issues
         uses: peter-evans/close-issue@v2
         with:
-          github-token: ${{ secrets.GITHUBTOKEN }}
+          token: ${{ secrets.TOKEN }}
           comment: "This issue was automatically closed after merging into the develop branch."
